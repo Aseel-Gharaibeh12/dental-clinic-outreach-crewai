@@ -1,0 +1,18 @@
+# Secrets - never commit
+.env
+.env.*
+!.env.example
+
+# Lead data (clinic phone numbers / emails) - never commit
+*.csv
+*.xlsx
+leads/
+output/
+report.md
+
+# Python / tooling
+__pycache__/
+*.pyc
+.venv/
+.crewai/
+.DS_Store

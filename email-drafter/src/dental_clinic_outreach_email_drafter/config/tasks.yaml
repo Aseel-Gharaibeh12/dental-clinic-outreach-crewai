@@ -1,0 +1,34 @@
+---
+draft_outreach_emails_and_whatsapp_messages_in_sheet:
+  description: |-
+    Open the existing Google Spreadsheet with ID {spreadsheet_id}, worksheet/tab named {tab_name}. Row 1 has headers: A Clinic Name, B Area, C Mobile/WhatsApp, D Email, E Website, F Source URL, G Email Subject, H Email Body, I Status, J WhatsApp Message. Read all rows. For EVERY clinic row (starting from row 2) OVERWRITE any existing values in G, H, I and J with newly generated content, using the real Clinic Name from column A.
+
+    1) Email Subject (G): "Helping [Clinic Name] get more bookings with AI"
+
+    2) Email Body (H): plain text following EXACTLY this structure, with line breaks between sections and bullets starting with "- ":
+
+    Dear [exact Clinic Name],
+
+    We are Zero Company, and we provide digital solutions designed for dental clinics. Our services include:
+
+    - A WhatsApp AI agent answering patient questions and booking appointments 24/7
+    - An AI voice/call center agent handling calls and bookings
+    - Professional website building
+    - Mobile app development
+
+    These solutions can help [Clinic Name] capture more bookings, reduce missed calls, and ease the workload on your reception team.
+
+    Please reply to this email or book a short demo at your convenience. If this is not relevant, please let us know and we will not contact you again.
+
+    Best regards,
+    Zero Company
+
+    Rules: use the real clinic name in both places ("Dear [exact Clinic Name]," and the benefit sentence). Vary the benefit sentence ("These solutions can help ...") slightly per clinic so emails are not identical, while keeping its meaning (more bookings, fewer missed calls, lighter reception workload). Keep everything else, including the bullets, exactly as written above.
+
+    3) Status (I): "Email Drafted"
+
+    4) WhatsApp Message (J): "Hello [Clinic Name], this is Zero Company. We help dental clinics with a 24/7 WhatsApp AI booking agent, AI call center agent, websites and mobile apps. Would you be open to a short free demo?"
+
+    Use the update values tool to write G to J for every row. Also write the header "WhatsApp Message" to J1 if it is empty. Never change columns A-F. Write rows in batches (e.g. a range like G2:J41) to avoid Google API read/write quota errors; if a quota error occurs, wait and retry. Use only Google Sheets tools.
+  expected_output: 'The number of rows updated and the spreadsheet link: https://docs.google.com/spreadsheets/d/{spreadsheet_id}'
+  agent: outreach_email_writer_for_zero_company

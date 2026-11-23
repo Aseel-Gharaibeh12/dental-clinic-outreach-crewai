@@ -1,0 +1,76 @@
+---
+find_dental_clinics_in_city:
+  description: 'Find as many dental clinics in {city}, {country} as possible. Search
+    in English and Arabic ("dental clinic Amman", "dentist Amman Jordan", "عيادة اسنان
+    عمان") and by area: Abdoun, Khalda, Sweifieh, Shmeisani, Jabal Amman, Tla Al Ali,
+    Marj Al Hamam, Abu Nseir, Dabouq, Jubeiha. De-duplicate by name and website.'
+  expected_output: A de-duplicated list of clinics, each with name, area, website,
+    and Google Maps/social link (blank if unknown).
+  agent: dental_clinic_researcher
+
+find_clinic_contact_details:
+  description: For each clinic, find the publicly listed business mobile/WhatsApp
+    number (Jordan format +962 7X XXX XXXX) and email using search and website scraping
+    (clinic site, Facebook, Instagram, directories). Record the source URL. Leave
+    fields empty if not found; never guess.
+  expected_output: 'A table with one row per clinic: name, area, mobile/WhatsApp,
+    email, website, source URL (empty where not found).'
+  agent: contact_finder
+  context:
+    - find_dental_clinics_in_city
+
+write_clinics_to_google_sheet:
+  description: 'Create a new Google spreadsheet named {sheet_name} (use the create
+    spreadsheet tool). In the FIRST worksheet of that spreadsheet (usually called
+    "Sheet1" - note that {sheet_name} is the file name, not the tab name), write the
+    header row with these columns in order: Clinic Name, Area, Mobile/WhatsApp, Email,
+    Website, Source URL, Email Subject, Email Body, Status, WhatsApp Message. Then,
+    for each clinic from the contact details, check whether it already exists and
+    skip duplicates (match by clinic name or website). Append one row per new clinic
+    with the append values tool, leaving Email Subject, Email Body and WhatsApp Message
+    empty and setting Status to "New". Leave unknown fields empty; never guess. Finally,
+    read the values back to confirm the row count and report the spreadsheet ID, the
+    worksheet (tab) name and the URL.'
+  expected_output: Confirmation that the spreadsheet {sheet_name} was created with
+    the 10 headers, the number of clinic rows appended (no duplicates), the spreadsheet
+    ID, the worksheet (tab) name, and the Google Sheet link.
+  agent: google_sheets_manager
+  context:
+    - find_clinic_contact_details
+
+write_outreach_emails_and_final_summary:
+  description: |-
+    Using the spreadsheet ID and the worksheet (tab) name reported by the previous task (the first worksheet, usually "Sheet1" - NOT a tab called {sheet_name}), read the clinic rows. For every clinic row write:
+
+    1) Email Subject (column G): "Helping [Clinic Name] get more bookings with AI"
+
+    2) Email Body (column H), plain text with exactly this structure:
+
+    Dear [exact Clinic Name],
+
+    We are Zero Company, and we provide digital solutions designed for dental clinics. Our services include:
+
+    - A WhatsApp AI agent answering patient questions and booking appointments 24/7
+    - An AI voice/call center agent handling calls and bookings
+    - Professional website building
+    - Mobile app development
+
+    These solutions can help [Clinic Name] capture more bookings, reduce missed calls, and ease the workload on your reception team.
+
+    Please reply to this email or book a short demo at your convenience. If this is not relevant, please let us know and we will not contact you again.
+
+    Best regards,
+    Zero Company
+
+    3) Status (column I): "Email Drafted"
+
+    4) WhatsApp Message (column J): "Hello [Clinic Name], this is Zero Company. We help dental clinics with a 24/7 WhatsApp AI booking agent, AI call center agent, websites and mobile apps. Would you be open to a short free demo?"
+
+    Write columns G to J in one batch range (e.g. G2:J41) with the update values tool. Never change columns A-F. If Google returns a quota error, wait and retry. Finally produce the summary.
+  expected_output: 'Final summary with: total clinics found, number with a mobile
+    number, number with an email, the Google Sheet link, and confirmation that
+    columns G-J were saved for every row.'
+  agent: outreach_email_writer
+  context:
+    - write_clinics_to_google_sheet
+    - find_clinic_contact_details

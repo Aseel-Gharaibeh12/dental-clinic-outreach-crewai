@@ -1,0 +1,20 @@
+[project]
+name = "dental_clinic_outreach_email_drafter"
+version = "0.1.0"
+description = "CrewAI crew that drafts outreach emails and WhatsApp messages into an existing Google Sheet"
+authors = [{ name = "Aseel Gharaibeh" }]
+requires-python = ">=3.10,<3.14"
+dependencies = [
+    "crewai[file-processing,litellm,tools]>=1.15.44,<2.0.0",
+]
+
+[project.scripts]
+dental_clinic_outreach_email_drafter = "dental_clinic_outreach_email_drafter.main:run"
+run_crew = "dental_clinic_outreach_email_drafter.main:run"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.crewai]
+type = "crew"

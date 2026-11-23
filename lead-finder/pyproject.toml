@@ -1,0 +1,20 @@
+[project]
+name = "amman_dental_clinic_outreach"
+version = "0.1.0"
+description = "CrewAI crew that finds dental clinics, their public contacts, and drafts outreach messages"
+authors = [{ name = "Aseel Gharaibeh" }]
+requires-python = ">=3.10,<3.14"
+dependencies = [
+    "crewai[file-processing,litellm,tools]>=1.15.44,<2.0.0",
+]
+
+[project.scripts]
+amman_dental_clinic_outreach = "amman_dental_clinic_outreach.main:run"
+run_crew = "amman_dental_clinic_outreach.main:run"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.crewai]
+type = "crew"
